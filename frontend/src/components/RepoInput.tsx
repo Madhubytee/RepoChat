@@ -29,7 +29,7 @@ export default function RepoInput({ onSubmit, isProcessing }: RepoInputProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen px-4">
       <div className="w-full max-w-2xl">
         <h1 className="text-4xl font-bold text-center mb-2 text-white">
           RepoChat

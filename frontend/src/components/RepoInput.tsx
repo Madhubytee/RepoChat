@@ -85,9 +85,6 @@ export default function RepoInput({ onSubmit, isProcessing }: RepoInputProps) {
 
         <div className="mt-8 text-center text-gray-500 text-sm">
           <p>Paste a public GitHub repository URL or use owner/repo format.</p>
-          <p className="mt-1 text-gray-600">
-            Try: <span className="text-gray-400">facebook/react</span> or <span className="text-gray-400">vercel/next.js</span>
-          </p>
         </div>
       </div>
     </div>

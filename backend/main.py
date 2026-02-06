@@ -43,6 +43,13 @@ async def process_repo(request: ProcessRepoRequest):
     session_id = str(uuid.uuid4()).replace("-", "")[:16]
     github_url = request.github_url.strip()
 
+    #Validate the GitHub URL format ex: https://github.com/owner/repo
+    github_pattern = r'^https://github\.com/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+/?$'
+    if not re.match(github_pattern, github_url):
+        raise HTTPException(status_code=400, detail="Please provide a valid GitHub URL (https://github.com/owner/repo)")
+    sessions[session_id] = {"status": "cloning", "files_processed": 0}
+
+    repo_path = None
     try:
         #Clones the repo
         repo_path = await asyncio.to_thread(clone_repo, github_url)

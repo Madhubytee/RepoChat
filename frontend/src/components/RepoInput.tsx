@@ -11,21 +11,39 @@ export default function RepoInput({ onSubmit, isProcessing }: RepoInputProps) {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
 
+  const normalizeGitHubUrl = (input: string): string => {
+    const trimmed = input.trim();
+
+    if (trimmed.startsWith("https://github.com/")) {
+      return trimmed;
+    }
+
+    //makes sure its in owner/repo format
+    const ownerRepoPattern = /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/;
+    if (ownerRepoPattern.test(trimmed)) {
+      return `https://github.com/${trimmed}`;
+    }
+
+    return trimmed;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!url.trim()) {
-      setError("Please enter a GitHub URL");
+      setError("Please enter a repository");
       return;
     }
 
-    if (!url.startsWith("https://github.com/")) {
-      setError("Please enter a valid GitHub URL (https://github.com/...)");
+    const normalizedUrl = normalizeGitHubUrl(url);
+
+    if (!normalizedUrl.startsWith("https://github.com/")) {
+      setError("Enter a GitHub URL or owner/repo format (e.g., facebook/react)");
       return;
     }
 
-    onSubmit(url.trim());
+    onSubmit(normalizedUrl);
   };
 
   return (
@@ -35,7 +53,6 @@ export default function RepoInput({ onSubmit, isProcessing }: RepoInputProps) {
           RepoChat
         </h1>
         <p className="text-center text-gray-400 mb-8">
-          Chat with any GitHub repository using AI
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -44,7 +61,7 @@ export default function RepoInput({ onSubmit, isProcessing }: RepoInputProps) {
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://github.com/owner/repo"
+              placeholder="owner/repo or https://github.com/owner/repo"
               disabled={isProcessing}
               className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg
                 text-white placeholder-gray-500 focus:outline-none focus:ring-2
@@ -67,9 +84,9 @@ export default function RepoInput({ onSubmit, isProcessing }: RepoInputProps) {
         </form>
 
         <div className="mt-8 text-center text-gray-500 text-sm">
-          <p>Paste a public GitHub repository URL to get started.</p>
-          <p className="mt-1">
-            The repo will be cloned, indexed, and made available for chat.
+          <p>Paste a public GitHub repository URL or use owner/repo format.</p>
+          <p className="mt-1 text-gray-600">
+            Try: <span className="text-gray-400">facebook/react</span> or <span className="text-gray-400">vercel/next.js</span>
           </p>
         </div>
       </div>
